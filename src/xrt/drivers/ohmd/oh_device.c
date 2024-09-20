@@ -85,6 +85,10 @@ enum input_indices
 // one mapping for each of enum ohmd_control_hint
 #define CONTROL_MAPPING_SIZE 16
 
+#if defined(OHMD_HAVE_HAPTICS_API_v0)
+#define DEFAULT_HAPTIC_FREQ 160f
+#endif
+
 // generic controllers are mapped to the khronos simple profile
 // touch controllers input mappings are special cased
 enum openhmd_device_type
@@ -324,7 +328,19 @@ oh_device_set_output(struct xrt_device *xdev, enum xrt_output_name name, const u
 	struct oh_device *ohd = oh_device(xdev);
 
 	#if defined(OHMD_HAVE_HAPTICS_API_v0)
-	ohmd_device_set_haptics_on(ohd->dev, (float)value->vibration.duration_ns / 10e9, value->vibration.frequency, value->vibration.amplitude);
+	float frequency = value->vibration.frequency;
+
+	// A frequency of 0.0f from OpenXR means to let the driver decide.
+	if (frequency == 0.0f) {
+		frequency = DEFAULT_HAPTIC_FREQ;
+	}
+	
+	ohmd_device_set_haptics_on(  
+								ohd->dev, 
+								(float)value->vibration.duration_ns / 1e9f,
+								frequency, 
+								value->vibration.amplitude
+							);
 	#else
 	(void)ohd;
 	#endif
