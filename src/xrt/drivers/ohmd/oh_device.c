@@ -322,9 +322,13 @@ static void
 oh_device_set_output(struct xrt_device *xdev, enum xrt_output_name name, const union xrt_output_value *value)
 {
 	struct oh_device *ohd = oh_device(xdev);
-	(void)ohd;
 
-	//! @todo OpenHMD haptic API not finished
+	#if defined(OHMD_HAVE_HAPTICS_API_v0)
+	ohmd_device_set_haptics_on(ohd->dev, (float)value->vibration.duration_ns / 10e9, value->vibration.frequency, value->vibration.amplitude);
+	#else
+	(void)ohd;
+	#endif
+
 }
 
 static bool
