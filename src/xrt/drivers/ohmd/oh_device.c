@@ -86,7 +86,7 @@ enum input_indices
 #define CONTROL_MAPPING_SIZE 16
 
 #if defined(OHMD_HAVE_HAPTICS_API_v0)
-#define DEFAULT_HAPTIC_FREQ 160f
+#define DEFAULT_HAPTIC_FREQ 160.0
 #endif
 
 // generic controllers are mapped to the khronos simple profile
